@@ -45,6 +45,23 @@ const PHOTOS = [
   'https://assets.htmlacademy.ru/content/intensive/javascript-1/keksobooking/claire-rendall-b6kAwr1i0Iw.jpg',
 ];
 
+const PRICE = {
+  min: 0,
+  max: 100000,
+};
+
+const ROOMS = {
+  min: 1,
+  max: 100,
+};
+
+const GUESTS = {
+  min: 1,
+  max: 3,
+};
+
+const ADS_AMOUNT = 10;
+
 const checkNumberOnNegative = (number) =>  number < 0;
 
 const checkRange = (min, max) => min >= max;
@@ -77,38 +94,48 @@ const getCoordinates = (min, max, dec) => {
   return parseFloat(randomNumber.toFixed(dec));
 };
 
-const getRandomAvatarAddress = (min, max) => {
-  const avatarAddressIndex = getRandomNumber(min, max);
-  return (avatarAddressIndex >= 1 && avatarAddressIndex <= 9) ? `0${avatarAddressIndex}` : avatarAddressIndex;
-};
+const getRandomAvatarAddress = (i) => (i < 10) ? `img/avatars/user0${i}.png` : `img/avatars/user${i}.png`;
 
 const getRandomArrayElement = (elements) => elements[getRandomNumber(0, elements.length - 1)];
 
-const getArrayLength = (elements) => getRandomNumber(1, elements.length);
+const shuffle = (arr) => {
+  for (let i = arr.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [arr[i], arr[j]] = [arr[j], arr[i]];
+  }
+  return arr;
+};
 
-const createAd = () => {
-  return {
+const getArrayRandomLength = (arr) => shuffle(arr).slice(getRandomNumber(0, arr.length - 1));
+
+const createAd = (i) => {
+  const ad = {
     author: {
-      avatar: `img/avatars/user${getRandomAvatarAddress(1, 10)}.png`,
+      avatar: getRandomAvatarAddress(i+1),
     },
     offer: {
       title: getRandomArrayElement(TITLES),
-      address: `${location.lat}, ${location.lng}`,
-      price: getRandomNumber(0, 100000),
+      price: getRandomNumber(PRICE.min, PRICE.max),
       type: getRandomArrayElement(TYPES),
-      rooms: getRandomNumber(1, 100),
-      guests: getRandomNumber(1, 3),
+      rooms: getRandomNumber(ROOMS.min, ROOMS.max),
+      guests: getRandomNumber(GUESTS.min, GUESTS.max),
       checkin: getRandomArrayElement(CHECKINS),
       checkout: getRandomArrayElement(CHECKOUTS),
-      features: FEATURES.slice(1, getArrayLength(FEATURES)),
+      features: getArrayRandomLength(FEATURES),
       description: getRandomArrayElement(DESCRIPTIONS),
-      photos: PHOTOS.slice(1, getArrayLength(PHOTOS)),
+      photos: getArrayRandomLength(PHOTOS),
     },
     location: {
       lat: getCoordinates(35.65000, 35.70000, 5),
       lng: getCoordinates(139.70000, 139.80000, 5),
     },
   };
+  ad.offer.address = `${ad.location.lat}, ${ad.location.lng}`;
+  return ad;
 };
 
-console.log(createAd());
+const allAds = [];
+for (let i = 0; i < ADS_AMOUNT; i++) {
+  allAds[i] = createAd(i);
+}
+
