@@ -54,7 +54,7 @@ const PRICE = {
 
 const ROOMS = {
   min: 1,
-  max: 100,
+  max: 3,
 };
 
 const GUESTS = {
