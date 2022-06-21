@@ -17,7 +17,7 @@ const getType = (type) => {
 
 const similarCardFragment = document.createDocumentFragment();
 
-const getSimilarCards = (ad) => {
+const getCard = (ad) => {
   const cardElement = similarCardTemplate.cloneNode(true);
   if (!cardElement.children) {
     cardElement.children.classList.add('visually-hidden');
@@ -46,8 +46,9 @@ const getSimilarCards = (ad) => {
         featuresListItem.remove();
       }
     });
+  } else {
+    cardElement.querySelector('.popup__features').classList.add('visually-hidden');
   }
-  cardElement.querySelector('.popup__features').classList.add('visually-hidden');
   cardElement.querySelector('.popup__description').textContent = ad.offer.description;
   const offerPhotos = ad.offer.photos;
   const photosContainer = cardElement.querySelector('.popup__photos');
@@ -59,8 +60,9 @@ const getSimilarCards = (ad) => {
       newPhoto.src = offerPhotos[i];
       photosContainer.append(newPhoto);
     }
+  } else {
+    cardElement.querySelector('.popup__photos').classList.add('visually-hidden');
   }
-  cardElement.querySelector('.popup__photos').classList.add('visually-hidden');
   if (!ad.author.avatar) {
     cardElement.querySelector('.popup__avatar').classList.add('visually-hidden');
   }
@@ -69,6 +71,6 @@ const getSimilarCards = (ad) => {
   return similarCardFragment;
 };
 
-export { getSimilarCards };
+export { getCard };
 
 
