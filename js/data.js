@@ -1,4 +1,4 @@
-import { getRandomAvatarAddress, getRandomArrayElement, getRandomNumber, getArrayRandomLength, getCoordinates } from './util.js';
+import { getAvatarAddress, getRandomArrayElement, getRandomNumber, getArrayRandomLength, getCoordinates, createRandomIdFromRangeGenerator } from './util.js';
 
 const TITLES = [
   'Великолепный вид на город',
@@ -62,12 +62,17 @@ const GUESTS = {
   max: 3,
 };
 
+const IDS = {
+  min: 1,
+  max: 10,
+};
+
 const ADS_AMOUNT = 10;
 
-const createAd = (i) => {
+const createAd = () => {
   const ad = {
     author: {
-      avatar: getRandomAvatarAddress(i + 1),
+      avatar: getAvatarAddress(createRandomIdFromRangeGenerator(IDS.min, IDS.max)()),
     },
     offer: {
       title: getRandomArrayElement(TITLES),
@@ -90,13 +95,7 @@ const createAd = (i) => {
   return ad;
 };
 
-const createAds = () => {
-  const allAds = [];
-  for (let i = 0; i < ADS_AMOUNT; i++) {
-    allAds[i] = createAd(i);
-  }
-  return allAds;
-};
+const similarAds = Array.from({ length: ADS_AMOUNT }, createAd);
 
-export { createAds };
+export { createAd, similarAds };
 

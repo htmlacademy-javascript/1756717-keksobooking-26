@@ -30,7 +30,7 @@ const getCoordinates = (min, max, dec) => {
   return parseFloat(randomNumber.toFixed(dec));
 };
 
-const getRandomAvatarAddress = (i) => (i < 10) ? `img/avatars/user0${i}.png` : `img/avatars/user${i}.png`;
+const getAvatarAddress = (i) => (i < 10) ? `img/avatars/user0${i}.png` : `img/avatars/user${i}.png`;
 
 const getRandomArrayElement = (elements) => elements[getRandomNumber(0, elements.length - 1)];
 
@@ -44,5 +44,21 @@ const shuffle = (arr) => {
 
 const getArrayRandomLength = (arr) => shuffle(arr).slice(getRandomNumber(0, arr.length - 1));
 
-export { getRandomAvatarAddress, getRandomArrayElement, getRandomNumber, getArrayRandomLength, getCoordinates };
+function createRandomIdFromRangeGenerator(min, max) {
+  const previousValues = [];
+
+  return function () {
+    let currentValue = getRandomNumber(min, max);
+    if (previousValues.length >= (max - min + 1)) {
+      throw (`Перебраны все числа из диапазона от ${min} до ${max}`);
+    }
+    while (previousValues.includes(currentValue)) {
+      currentValue = getRandomNumber(min, max);
+    }
+    previousValues.push(currentValue);
+    return currentValue;
+  };
+}
+
+export { getAvatarAddress, getRandomArrayElement, getRandomNumber, getArrayRandomLength, getCoordinates, createRandomIdFromRangeGenerator };
 
