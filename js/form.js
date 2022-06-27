@@ -29,6 +29,50 @@ const makeFormActive = () => {
   mapFiltersForm.querySelector('.map__features').removeAttribute('disabled');
 };
 
-export { makeFormInactive, makeFormActive };
+const pristine = new Pristine(form, {
+  classTo: 'ad-form__element',
+  errorTextParent: 'ad-form__element'
+});
+
+const capacityField = form.querySelector('#capacity');
+const roomField = form.querySelector('#room_number');
+const capacityOptions = {
+  '1': ['1'],
+  '2': ['1', '2'],
+  '3': ['1', '2', '3'],
+  '100': ['0'],
+};
+
+const validateCapacity = () => capacityOptions[roomField.value].includes(capacityField.value);
+
+const createRoomCapacityMessage = (roomAmount) => {
+  switch (roomAmount) {
+    case ('1'):
+      return ' комната подходит для 1 гостя';
+    case ('2'):
+      return ' комнаты подходят для 1-2 гостей';
+    case ('3'):
+      return ' комнаты подходят для 1-3 гостей';
+    case ('100'):
+      return ' комнат предназначены не для гостей';
+  }
+};
+
+const getCapacityErrorMessage = () => `${roomField.value}${createRoomCapacityMessage(roomField.value)}`;
+
+pristine.addValidator(capacityField, validateCapacity, getCapacityErrorMessage);
+
+const validateCapacityField = () => pristine.validate(capacityField);
+
+capacityField.addEventListener('change', validateCapacityField);
+roomField.addEventListener('change', validateCapacityField);
+
+form.addEventListener('submit', (evt) => {
+  evt.preventDefault();
+  pristine.validate();
+});
+
+makeFormInactive();
+makeFormActive();
 
 
