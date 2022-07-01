@@ -47,13 +47,13 @@ const validateCapacity = () => capacityOptions[roomField.value].includes(capacit
 
 const createRoomCapacityMessage = (roomAmount) => {
   switch (roomAmount) {
-    case ('1'):
+    case '1':
       return ' комната подходит для 1 гостя';
-    case ('2'):
+    case '2':
       return ' комнаты подходят для 1-2 гостей';
-    case ('3'):
+    case '3':
       return ' комнаты подходят для 1-3 гостей';
-    case ('100'):
+    case '100':
       return ' комнат предназначены не для гостей';
   }
 };
@@ -72,7 +72,4 @@ form.addEventListener('submit', (evt) => {
   pristine.validate();
 });
 
-makeFormInactive();
-makeFormActive();
-
-
+export { makeFormInactive, makeFormActive };
