@@ -24,7 +24,7 @@ const getCard = (ad) => {
   }
   cardElement.querySelector('.popup__title').textContent = ad.offer.title;
   cardElement.querySelector('.popup__text--address').textContent = ad.offer.address;
-  cardElement.querySelector('.popup__text--price').innerHTML = `${ad.offer.price} <span>₽/ночь</span>`;
+  cardElement.querySelector('.js-price').textContent = ad.offer.price;
   cardElement.querySelector('.popup__type').textContent = getType(ad.offer.type);
   if (!ad.offer.rooms || !ad.offer.guests) {
     cardElement.querySelector('.popup__text--capacity').classList.add('visually-hidden');
