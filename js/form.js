@@ -61,9 +61,11 @@ const makeTypeMinPrice = () => {
   priceFieldElement.min = MIN_PRICE[typeFieldElement.value];
 };
 
+makeTypeMinPrice();
+
 const validateCapacity = () => CAPACITY_OPTIONS[roomFieldElement.value].includes(capacityFieldElement.value);
 
-const validatePrice = () => priceFieldElement.min <= priceFieldElement.value;
+const validatePrice = () => +priceFieldElement.min <= +priceFieldElement.value;
 
 const validateTimeOut = () => {
   if (!(timeInFieldElement.value === timeOutFieldElement.value)) {
@@ -100,20 +102,20 @@ const validateCapacityField = () => pristine.validate(capacityFieldElement);
 const validateRoomField = () => pristine.validate(capacityFieldElement);
 const validatePriceField = () => pristine.validate(priceFieldElement);
 
-const onCapacityFieldChange = capacityFieldElement.addEventListener('change', validateCapacityField);
-const onRoomFieldChange = roomFieldElement.addEventListener('change', validateRoomField);
-const onTypeFieldChange = typeFieldElement.addEventListener('change', () => {
+capacityFieldElement.addEventListener('change', validateCapacityField);
+roomFieldElement.addEventListener('change', validateRoomField);
+typeFieldElement.addEventListener('change', () => {
   makeTypeMinPrice();
   validatePriceField();
 });
-const onPriceFieldChange = priceFieldElement.addEventListener('change', validatePriceField);
-const onTimeInFieldChange = timeInFieldElement.addEventListener('change', validateTimeIn);
-const onTimeOutFieldChange = timeOutFieldElement.addEventListener('change', validateTimeOut);
+priceFieldElement.addEventListener('change', validatePriceField);
+timeInFieldElement.addEventListener('change', validateTimeIn);
+timeOutFieldElement.addEventListener('change', validateTimeOut);
 
-const onFormClick = formElement.addEventListener('submit', (evt) => {
+formElement.addEventListener('submit', (evt) => {
   if (!pristine.validate()) {
     evt.preventDefault();
   }
 });
 
-export { makeFormInactive, makeFormActive, onFormClick };
+export { makeFormInactive, makeFormActive };
