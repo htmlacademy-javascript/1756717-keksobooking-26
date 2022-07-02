@@ -111,15 +111,9 @@ const onTimeInFieldChange = timeInFieldElement.addEventListener('change', valida
 const onTimeOutFieldChange = timeOutFieldElement.addEventListener('change', validateTimeOut);
 
 const onFormClick = formElement.addEventListener('submit', (evt) => {
-  if(!pristine.validate()) {
+  if (!pristine.validate()) {
     evt.preventDefault();
   }
-  capacityFieldElement.removeEventListener('change', onCapacityFieldChange);
-  roomFieldElement.removeEventListener('change', onRoomFieldChange);
-  typeFieldElement.removeEventListener('change', onTypeFieldChange);
-  priceFieldElement.removeEventListener('change', onPriceFieldChange);
-  timeInFieldElement.removeEventListener('change', onTimeInFieldChange);
-  timeOutFieldElement.removeEventListener('change', onTimeOutFieldChange);
 });
 
 export { makeFormInactive, makeFormActive, onFormClick };
