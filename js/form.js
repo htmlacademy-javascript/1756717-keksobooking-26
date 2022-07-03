@@ -1,78 +1,121 @@
-const form = document.querySelector('.ad-form');
-const formElements = form.querySelectorAll('.ad-form__element');
-const mapFiltersForm = document.querySelector('.map__filters');
-const mapFilters = mapFiltersForm.querySelectorAll('.map__filter');
-
-const makeFormInactive = () => {
-  form.classList.add('ad-form--disabled');
-  form.querySelector('.ad-form-header').setAttribute('disabled', '');
-  formElements.forEach((formElement) => {
-    formElement.setAttribute('disabled', '');
-  });
-  mapFiltersForm.classList.add('map__filters--disabled');
-  mapFilters.forEach((mapFilter) => {
-    mapFilter.setAttribute('disabled', '');
-  });
-  mapFiltersForm.querySelector('.map__features').setAttribute('disabled', '');
+const MIN_PRICE = {
+  'bungalow': 0,
+  'flat': 1000,
+  'hotel': 3000,
+  'house': 5000,
+  'palace': 10000,
 };
 
-const makeFormActive = () => {
-  form.classList.remove('ad-form--disabled');
-  form.querySelector('.ad-form-header').removeAttribute('disabled');
-  formElements.forEach((formElement) => {
-    formElement.removeAttribute('disabled');
-  });
-  mapFiltersForm.classList.remove('map__filters--disabled');
-  mapFilters.forEach((mapFilter) => {
-    mapFilter.removeAttribute('disabled');
-  });
-  mapFiltersForm.querySelector('.map__features').removeAttribute('disabled');
-};
-
-const pristine = new Pristine(form, {
-  classTo: 'ad-form__element',
-  errorTextParent: 'ad-form__element'
-});
-
-const capacityField = form.querySelector('#capacity');
-const roomField = form.querySelector('#room_number');
-const capacityOptions = {
+const CAPACITY_OPTIONS = {
   '1': ['1'],
   '2': ['1', '2'],
   '3': ['1', '2', '3'],
   '100': ['0'],
 };
 
-const validateCapacity = () => capacityOptions[roomField.value].includes(capacityField.value);
+const formElement = document.querySelector('.ad-form');
+const formElements = formElement.querySelectorAll('.ad-form__element');
+const mapFiltersFormElement = document.querySelector('.map__filters');
+const mapFilterElements = mapFiltersFormElement.querySelectorAll('.map__filter');
+
+const makeFormInactive = () => {
+  formElement.classList.add('ad-form--disabled');
+  formElement.querySelector('.ad-form-header').setAttribute('disabled', '');
+  formElements.forEach((element) => {
+    element.setAttribute('disabled', '');
+  });
+  mapFiltersFormElement.classList.add('map__filters--disabled');
+  mapFilterElements.forEach((mapFilter) => {
+    mapFilter.setAttribute('disabled', '');
+  });
+  mapFiltersFormElement.querySelector('.map__features').setAttribute('disabled', '');
+};
+
+const makeFormActive = () => {
+  formElement.classList.remove('ad-form--disabled');
+  formElement.querySelector('.ad-form-header').removeAttribute('disabled');
+  formElements.forEach((element) => {
+    element.removeAttribute('disabled');
+  });
+  mapFiltersFormElement.classList.remove('map__filters--disabled');
+  mapFilterElements.forEach((mapFilter) => {
+    mapFilter.removeAttribute('disabled');
+  });
+  mapFiltersFormElement.querySelector('.map__features').removeAttribute('disabled');
+};
+
+const pristine = new Pristine(formElement, {
+  classTo: 'ad-form__element',
+  errorTextParent: 'ad-form__element'
+});
+
+const capacityFieldElement = formElement.querySelector('#capacity');
+const roomFieldElement = formElement.querySelector('#room_number');
+const typeFieldElement = formElement.querySelector('#type');
+const priceFieldElement = formElement.querySelector('#price');
+const timeInFieldElement = formElement.querySelector('#timein');
+const timeOutFieldElement = formElement.querySelector('#timeout');
+
+const makeTypeMinPrice = () => {
+  priceFieldElement.placeholder = MIN_PRICE[typeFieldElement.value];
+  priceFieldElement.min = MIN_PRICE[typeFieldElement.value];
+};
+
+makeTypeMinPrice();
+
+const validateCapacity = () => CAPACITY_OPTIONS[roomFieldElement.value].includes(capacityFieldElement.value);
+
+const validatePrice = () => +priceFieldElement.min <= +priceFieldElement.value;
+
+const validateTimeOut = () => {
+  if (!(timeInFieldElement.value === timeOutFieldElement.value)) {
+    timeInFieldElement.value = timeOutFieldElement.value;
+  }
+};
+
+const validateTimeIn = () => {
+  if (!(timeInFieldElement.value === timeOutFieldElement.value)) {
+    timeOutFieldElement.value = timeInFieldElement.value;
+  }
+};
 
 const createRoomCapacityMessage = (roomAmount) => {
   switch (roomAmount) {
-    case ('1'):
+    case '1':
       return ' комната подходит для 1 гостя';
-    case ('2'):
+    case '2':
       return ' комнаты подходят для 1-2 гостей';
-    case ('3'):
+    case '3':
       return ' комнаты подходят для 1-3 гостей';
-    case ('100'):
+    case '100':
       return ' комнат предназначены не для гостей';
   }
 };
 
-const getCapacityErrorMessage = () => `${roomField.value}${createRoomCapacityMessage(roomField.value)}`;
+const getCapacityErrorMessage = () => `${roomFieldElement.value}${createRoomCapacityMessage(roomFieldElement.value)}`;
+const getPriceErrorMessage = () => `Минимальная цена ${MIN_PRICE[typeFieldElement.value]}`;
 
-pristine.addValidator(capacityField, validateCapacity, getCapacityErrorMessage);
+pristine.addValidator(capacityFieldElement, validateCapacity, getCapacityErrorMessage);
+pristine.addValidator(priceFieldElement, validatePrice, getPriceErrorMessage);
 
-const validateCapacityField = () => pristine.validate(capacityField);
+const validateCapacityField = () => pristine.validate(capacityFieldElement);
+const validateRoomField = () => pristine.validate(capacityFieldElement);
+const validatePriceField = () => pristine.validate(priceFieldElement);
 
-capacityField.addEventListener('change', validateCapacityField);
-roomField.addEventListener('change', validateCapacityField);
+capacityFieldElement.addEventListener('change', validateCapacityField);
+roomFieldElement.addEventListener('change', validateRoomField);
+typeFieldElement.addEventListener('change', () => {
+  makeTypeMinPrice();
+  validatePriceField();
+});
+priceFieldElement.addEventListener('change', validatePriceField);
+timeInFieldElement.addEventListener('change', validateTimeIn);
+timeOutFieldElement.addEventListener('change', validateTimeOut);
 
-form.addEventListener('submit', (evt) => {
-  evt.preventDefault();
-  pristine.validate();
+formElement.addEventListener('submit', (evt) => {
+  if (!pristine.validate()) {
+    evt.preventDefault();
+  }
 });
 
-makeFormInactive();
-makeFormActive();
-
-
+export { makeFormInactive, makeFormActive };
