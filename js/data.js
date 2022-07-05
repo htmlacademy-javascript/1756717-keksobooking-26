@@ -97,5 +97,5 @@ const createAd = () => {
 
 const similarAds = Array.from({ length: ADS_AMOUNT }, createAd);
 
-export { createAd, similarAds };
+export { createAd, similarAds, ADS_AMOUNT };
 
