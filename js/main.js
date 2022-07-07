@@ -1,10 +1,11 @@
-import { createAd } from './data.js';
-import { getCard } from './card.js';
-import { makeFormInactive, makeFormActive } from './form.js';
-
-const mapCanvas = document.querySelector('#map-canvas');
-
-mapCanvas.append(getCard(createAd()));
+import { makeFormInactive } from './form.js';
+import { createMap, createMainPinMarker, createSimilarPopups } from './map.js';
+import { similarAds } from './data.js';
 
 makeFormInactive();
-makeFormActive();
+
+const map = createMap();
+
+createMainPinMarker(map);
+
+createSimilarPopups(similarAds, map);

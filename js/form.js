@@ -44,6 +44,26 @@ const makeFormActive = () => {
   mapFiltersFormElement.querySelector('.map__features').removeAttribute('disabled');
 };
 
+const sliderElement = document.querySelector('.ad-form__slider');
+
+noUiSlider.create(sliderElement, {
+  range: {
+    min: 0,
+    max: 100000,
+  },
+  start: 1000,
+  step: 100,
+  connect: 'lower',
+  format: {
+    to: function (value) {
+      return value.toFixed(0);
+    },
+    from: function (value) {
+      return parseFloat(value);
+    },
+  },
+});
+
 const pristine = new Pristine(formElement, {
   classTo: 'ad-form__element',
   errorTextParent: 'ad-form__element'
@@ -107,6 +127,7 @@ roomFieldElement.addEventListener('change', validateRoomField);
 typeFieldElement.addEventListener('change', () => {
   makeTypeMinPrice();
   validatePriceField();
+  sliderElement.noUiSlider.set(priceFieldElement.min);
 });
 priceFieldElement.addEventListener('change', validatePriceField);
 timeInFieldElement.addEventListener('change', validateTimeIn);
@@ -116,6 +137,11 @@ formElement.addEventListener('submit', (evt) => {
   if (!pristine.validate()) {
     evt.preventDefault();
   }
+});
+
+sliderElement.noUiSlider.on('update', () => {
+  priceFieldElement.value = sliderElement.noUiSlider.get();
+  validatePriceField();
 });
 
 export { makeFormInactive, makeFormActive };

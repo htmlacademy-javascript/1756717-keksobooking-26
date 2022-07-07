@@ -15,10 +15,9 @@ const getType = (type) => {
   }
 };
 
-const similarCardFragment = document.createDocumentFragment();
-
 const getCard = (ad) => {
   const cardElement = similarCardTemplate.cloneNode(true);
+  cardElement.classList.add('popup');
   if (!cardElement.children) {
     cardElement.children.classList.add('visually-hidden');
   }
@@ -67,8 +66,7 @@ const getCard = (ad) => {
     cardElement.querySelector('.popup__avatar').classList.add('visually-hidden');
   }
   cardElement.querySelector('.popup__avatar').src = ad.author.avatar;
-  similarCardFragment.appendChild(cardElement);
-  return similarCardFragment;
+  return cardElement;
 };
 
 export { getCard };
