@@ -1,5 +1,5 @@
 import { makeFormActive } from './form.js';
-import { getCard } from './card.js';
+import { renderSimilarCard } from './card.js';
 
 const addressElement = document.querySelector('#address');
 
@@ -68,7 +68,7 @@ const createMapMarkers = (similarAds, map) => {
   similarAds.forEach((similarAd) => {
     const similarAdLat = similarAd.location.lat;
     const similarAdLng = similarAd.location.lng;
-    const similarAdPopup = getCard(similarAd);
+    const similarAdPopup = renderSimilarCard(similarAd);
     const marker = L.marker(
       {
         lat: similarAdLat,

@@ -15,7 +15,7 @@ const getType = (type) => {
   }
 };
 
-const getCard = (ad) => {
+const renderSimilarCard = (ad) => {
   const cardElement = similarCardTemplate.cloneNode(true);
   cardElement.classList.add('popup');
   if (!cardElement.children) {
@@ -67,8 +67,9 @@ const getCard = (ad) => {
   }
   cardElement.querySelector('.popup__avatar').src = ad.author.avatar;
   return cardElement;
+
 };
 
-export { getCard };
+export { renderSimilarCard };
 
 
