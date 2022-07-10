@@ -58,7 +58,7 @@ const createMainPinMarker = (map) => {
   });
 };
 
-const createSimilarPopups = (similarAds, map) => {
+const createMapMarkers = (similarAds, map) => {
 
   const similarIcon = L.icon({
     iconUrl: './img/pin.svg',
@@ -86,4 +86,4 @@ const createSimilarPopups = (similarAds, map) => {
   });
 };
 
-export { createMap, createMainPinMarker, createSimilarPopups };
+export { createMap, createMainPinMarker, createMapMarkers };
