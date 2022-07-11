@@ -67,7 +67,6 @@ const renderSimilarCard = (ad) => {
   }
   cardElement.querySelector('.popup__avatar').src = ad.author.avatar;
   return cardElement;
-
 };
 
 export { renderSimilarCard };

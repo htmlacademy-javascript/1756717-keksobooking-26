@@ -80,5 +80,11 @@ const showErrorLoadMessage = (message) => {
   }, ERROR_SHOW_TIME);
 };
 
-export { getAvatarAddress, getRandomArrayElement, getRandomNumber, getArrayRandomLength, getCoordinates, createRandomIdFromRangeGenerator, showErrorLoadMessage };
+const isEscapeKey = (evt) => evt.key === 'Escape';
+
+const closeMessage = (message) => {
+  message.style.display = 'none';
+};
+
+export { getAvatarAddress, getRandomArrayElement, getRandomNumber, getArrayRandomLength, getCoordinates, createRandomIdFromRangeGenerator, showErrorLoadMessage, isEscapeKey, closeMessage };
 

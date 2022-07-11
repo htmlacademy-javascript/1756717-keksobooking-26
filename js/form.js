@@ -1,3 +1,7 @@
+/*import { clearMap } from './map.js';*/
+import { isEscapeKey, closeMessage } from './util.js';
+import { sendData } from './load.js';
+
 const MIN_PRICE = {
   'bungalow': 0,
   'flat': 1000,
@@ -12,6 +16,13 @@ const CAPACITY_OPTIONS = {
   '3': ['1', '2', '3'],
   '100': ['0'],
 };
+
+const TYPE_ON_DEFAULT = 'flat';
+const ROOM_AMOUNT_ON_DEFAULT = '1';
+const CAPACITY_ON_DEFAULT = '3';
+const TIMEIN_ON_DEFAULT = '12:00';
+const TIMEOUT_ON_DEFAULT = '12:00';
+const PRICE_ON_DEFAULT = '1000';
 
 const formElement = document.querySelector('.ad-form');
 const formElements = formElement.querySelectorAll('.ad-form__element');
@@ -69,12 +80,18 @@ const pristine = new Pristine(formElement, {
   errorTextParent: 'ad-form__element'
 });
 
+const titleFieldElement = formElement.querySelector('#title');
+const avatarFieldElement = formElement.querySelector('#avatar');
 const capacityFieldElement = formElement.querySelector('#capacity');
 const roomFieldElement = formElement.querySelector('#room_number');
 const typeFieldElement = formElement.querySelector('#type');
 const priceFieldElement = formElement.querySelector('#price');
+const descriptionFieldElement = formElement.querySelector('#description');
 const timeInFieldElement = formElement.querySelector('#timein');
 const timeOutFieldElement = formElement.querySelector('#timeout');
+const fotoFieldElement = formElement.querySelector('#images');
+const featuresFieldElements = formElement.querySelectorAll('.features__checkbox');
+const resetButtonElement = formElement.querySelector('.ad-form__reset');
 
 const makeTypeMinPrice = () => {
   priceFieldElement.placeholder = MIN_PRICE[typeFieldElement.value];
@@ -133,15 +150,111 @@ priceFieldElement.addEventListener('change', validatePriceField);
 timeInFieldElement.addEventListener('change', validateTimeIn);
 timeOutFieldElement.addEventListener('change', validateTimeOut);
 
-formElement.addEventListener('submit', (evt) => {
-  if (!pristine.validate()) {
-    evt.preventDefault();
-  }
+const clearForm = () => {
+  avatarFieldElement.value = '';
+  titleFieldElement.value = '';
+  typeFieldElement.value = TYPE_ON_DEFAULT;
+  priceFieldElement.value = PRICE_ON_DEFAULT;
+  priceFieldElement.placeholder = PRICE_ON_DEFAULT;
+  sliderElement.noUiSlider.set(PRICE_ON_DEFAULT);
+  roomFieldElement.value = ROOM_AMOUNT_ON_DEFAULT;
+  capacityFieldElement.value = CAPACITY_ON_DEFAULT;
+  descriptionFieldElement.value = '';
+  timeInFieldElement.value = TIMEIN_ON_DEFAULT;
+  timeOutFieldElement.value = TIMEOUT_ON_DEFAULT;
+  fotoFieldElement.value = '';
+  featuresFieldElements.forEach((featureFieldElement) => {
+    if (featureFieldElement.checked) {
+      featureFieldElement.checked = false;
+    }
+  });
+};
+
+resetButtonElement.addEventListener('click', () => {
+  clearForm();
 });
+
+const successSubmitMessageTemplate = document.querySelector('#success').content.querySelector('.success');
+
+const showSuccessSubmitMessage = () => {
+  const successSubmitMessage = successSubmitMessageTemplate.cloneNode(true);
+  successSubmitMessage.classList.add('success');
+  document.body.append(successSubmitMessage);
+  document.addEventListener('keydown', (evt) => {
+    if (isEscapeKey(evt)) {
+      evt.preventDefault();
+      closeMessage(successSubmitMessage);
+    }
+  });
+  document.addEventListener('click', (evt) => {
+    if (!(successSubmitMessage.style.display === 'none')) {
+      evt.preventDefault();
+      closeMessage(successSubmitMessage);
+    }
+  }
+  );
+};
+
+const errorButtonElement = document.querySelector('.error__button');
+
+const errorSubmitMessageTemplate = document.querySelector('#error').content.querySelector('.error');
+
+const showErrorSubmitMessage = () => {
+  const errorSubmitMessage = errorSubmitMessageTemplate.cloneNode(true);
+  errorSubmitMessage.classList.add('error');
+  document.body.append(errorSubmitMessage);
+  document.addEventListener('keydown', (evt) => {
+    if (isEscapeKey(evt)) {
+      evt.preventDefault();
+      closeMessage(errorSubmitMessage);
+    }
+  });
+  document.addEventListener('click', (evt) => {
+    if (!(errorSubmitMessage.style.display === 'none')) {
+      evt.preventDefault();
+      closeMessage(errorSubmitMessage);
+    }
+  });
+  errorButtonElement.addEventListener('click', (evt) => {
+    evt.preventDefault();
+    closeMessage(errorSubmitMessage);
+  });
+};
+
+const submitButtonElement = document.querySelector('.ad-form__submit');
+
+const blockSubmitButton = () => {
+  submitButtonElement.disabled = true;
+};
+
+const unblockSubmitButton = () => {
+  submitButtonElement.disabled = false;
+};
+
+const setFormSubmit = (onSuccess) => {
+  formElement.addEventListener('submit', (evt) => {
+    evt.preventDefault();
+    if (pristine.validate()) {
+      blockSubmitButton();
+      sendData(
+        () => {
+          onSuccess();
+          unblockSubmitButton();
+          showSuccessSubmitMessage();
+        },
+        () => {
+          showErrorSubmitMessage();
+          unblockSubmitButton();
+        },
+        new FormData(evt.target),
+      );
+    }
+  });
+};
 
 sliderElement.noUiSlider.on('update', () => {
   priceFieldElement.value = sliderElement.noUiSlider.get();
   validatePriceField();
 });
 
-export { makeFormInactive, makeFormActive };
+export { makeFormInactive, makeFormActive, setFormSubmit, clearForm, showErrorSubmitMessage, showSuccessSubmitMessage };
