@@ -62,6 +62,8 @@ const createMainPinMarker = (map) => {
   return mainPinMarker;
 };
 
+const mainMarker = createMainPinMarker(mapMain);
+
 const similarIcon = L.icon({
   iconUrl: './img/pin.svg',
   iconSize: [40, 40],
@@ -90,7 +92,7 @@ const createMapMarker = (similarAd) => {
     .bindPopup(similarAdPopup);
 };
 
-const clearMap = (mainMarker) => {
+const clearMap = () => {
   mainMarker.setLatLng({
     lat: STATIC_MAIN_LAT,
     lng: STATIC_MAIN_LNG,
@@ -99,4 +101,4 @@ const clearMap = (mainMarker) => {
   markerGroup.clearLayers();
 };
 
-export { mapMain, activateMap, createMainPinMarker, createMapMarker, clearMap };
+export { activateMap, createMapMarker, clearMap };

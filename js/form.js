@@ -1,5 +1,5 @@
-/*import { clearMap } from './map.js';*/
-import { isEscapeKey, closeMessage } from './util.js';
+import { clearMap } from './map.js';
+import { isEscapeKey } from './util.js';
 import { sendData } from './load.js';
 
 const MIN_PRICE = {
@@ -16,13 +16,6 @@ const CAPACITY_OPTIONS = {
   '3': ['1', '2', '3'],
   '100': ['0'],
 };
-
-const TYPE_ON_DEFAULT = 'flat';
-const ROOM_AMOUNT_ON_DEFAULT = '1';
-const CAPACITY_ON_DEFAULT = '3';
-const TIMEIN_ON_DEFAULT = '12:00';
-const TIMEOUT_ON_DEFAULT = '12:00';
-const PRICE_ON_DEFAULT = '1000';
 
 const formElement = document.querySelector('.ad-form');
 const formElements = formElement.querySelectorAll('.ad-form__element');
@@ -80,17 +73,12 @@ const pristine = new Pristine(formElement, {
   errorTextParent: 'ad-form__element'
 });
 
-const titleFieldElement = formElement.querySelector('#title');
-const avatarFieldElement = formElement.querySelector('#avatar');
 const capacityFieldElement = formElement.querySelector('#capacity');
 const roomFieldElement = formElement.querySelector('#room_number');
 const typeFieldElement = formElement.querySelector('#type');
 const priceFieldElement = formElement.querySelector('#price');
-const descriptionFieldElement = formElement.querySelector('#description');
 const timeInFieldElement = formElement.querySelector('#timein');
 const timeOutFieldElement = formElement.querySelector('#timeout');
-const fotoFieldElement = formElement.querySelector('#images');
-const featuresFieldElements = formElement.querySelectorAll('.features__checkbox');
 const resetButtonElement = formElement.querySelector('.ad-form__reset');
 
 const makeTypeMinPrice = () => {
@@ -151,28 +139,34 @@ timeInFieldElement.addEventListener('change', validateTimeIn);
 timeOutFieldElement.addEventListener('change', validateTimeOut);
 
 const clearForm = () => {
-  avatarFieldElement.value = '';
-  titleFieldElement.value = '';
-  typeFieldElement.value = TYPE_ON_DEFAULT;
-  priceFieldElement.value = PRICE_ON_DEFAULT;
-  priceFieldElement.placeholder = PRICE_ON_DEFAULT;
-  sliderElement.noUiSlider.set(PRICE_ON_DEFAULT);
-  roomFieldElement.value = ROOM_AMOUNT_ON_DEFAULT;
-  capacityFieldElement.value = CAPACITY_ON_DEFAULT;
-  descriptionFieldElement.value = '';
-  timeInFieldElement.value = TIMEIN_ON_DEFAULT;
-  timeOutFieldElement.value = TIMEOUT_ON_DEFAULT;
-  fotoFieldElement.value = '';
-  featuresFieldElements.forEach((featureFieldElement) => {
-    if (featureFieldElement.checked) {
-      featureFieldElement.checked = false;
-    }
-  });
+  formElement.reset();
+  clearMap();
 };
 
-resetButtonElement.addEventListener('click', () => {
+resetButtonElement.addEventListener('click', (evt) => {
+  evt.preventDefault();
   clearForm();
 });
+
+const onMessageEscKeydown = (evt) => {
+  if (isEscapeKey(evt)) {
+    evt.preventDefault();
+    closeMessage(document.body.lastChild);
+  }
+};
+
+const onMessageClickToClose = (evt) => {
+  if (!(evt.target.style.display === 'none')) {
+    evt.preventDefault();
+    closeMessage(document.body.lastChild);
+  }
+};
+
+function closeMessage (message) {
+  message.remove();
+  document.removeEventListener('keydown', onMessageEscKeydown);
+  document.removeEventListener('click', onMessageClickToClose);
+}
 
 const successSubmitMessageTemplate = document.querySelector('#success').content.querySelector('.success');
 
@@ -180,22 +174,9 @@ const showSuccessSubmitMessage = () => {
   const successSubmitMessage = successSubmitMessageTemplate.cloneNode(true);
   successSubmitMessage.classList.add('success');
   document.body.append(successSubmitMessage);
-  document.addEventListener('keydown', (evt) => {
-    if (isEscapeKey(evt)) {
-      evt.preventDefault();
-      closeMessage(successSubmitMessage);
-    }
-  });
-  document.addEventListener('click', (evt) => {
-    if (!(successSubmitMessage.style.display === 'none')) {
-      evt.preventDefault();
-      closeMessage(successSubmitMessage);
-    }
-  }
-  );
+  document.addEventListener('keydown', onMessageEscKeydown);
+  document.addEventListener('click', onMessageClickToClose);
 };
-
-const errorButtonElement = document.querySelector('.error__button');
 
 const errorSubmitMessageTemplate = document.querySelector('#error').content.querySelector('.error');
 
@@ -203,22 +184,8 @@ const showErrorSubmitMessage = () => {
   const errorSubmitMessage = errorSubmitMessageTemplate.cloneNode(true);
   errorSubmitMessage.classList.add('error');
   document.body.append(errorSubmitMessage);
-  document.addEventListener('keydown', (evt) => {
-    if (isEscapeKey(evt)) {
-      evt.preventDefault();
-      closeMessage(errorSubmitMessage);
-    }
-  });
-  document.addEventListener('click', (evt) => {
-    if (!(errorSubmitMessage.style.display === 'none')) {
-      evt.preventDefault();
-      closeMessage(errorSubmitMessage);
-    }
-  });
-  errorButtonElement.addEventListener('click', (evt) => {
-    evt.preventDefault();
-    closeMessage(errorSubmitMessage);
-  });
+  document.addEventListener('keydown', onMessageEscKeydown);
+  document.addEventListener('click', onMessageClickToClose);
 };
 
 const submitButtonElement = document.querySelector('.ad-form__submit');

@@ -82,9 +82,5 @@ const showErrorLoadMessage = (message) => {
 
 const isEscapeKey = (evt) => evt.key === 'Escape';
 
-const closeMessage = (message) => {
-  message.style.display = 'none';
-};
-
-export { getAvatarAddress, getRandomArrayElement, getRandomNumber, getArrayRandomLength, getCoordinates, createRandomIdFromRangeGenerator, showErrorLoadMessage, isEscapeKey, closeMessage };
+export { getAvatarAddress, getRandomArrayElement, getRandomNumber, getArrayRandomLength, getCoordinates, createRandomIdFromRangeGenerator, showErrorLoadMessage, isEscapeKey };
 

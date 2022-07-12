@@ -1,5 +1,5 @@
 import { makeFormInactive, setFormSubmit, clearForm } from './form.js';
-import { mapMain, activateMap, createMainPinMarker, createMapMarker} from './map.js';
+import { activateMap, createMapMarker} from './map.js';
 import { getData } from './load.js';
 import { showErrorLoadMessage } from './util.js';
 
@@ -8,8 +8,6 @@ const MAX_SIMILAR_ADS_AMOUNT = 10;
 makeFormInactive();
 
 activateMap();
-
-createMainPinMarker(mapMain);
 
 getData(
   (data) => {
