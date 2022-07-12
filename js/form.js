@@ -148,6 +148,7 @@ resetButtonElement.addEventListener('click', (evt) => {
   clearForm();
 });
 
+
 const onMessageEscKeydown = (evt) => {
   if (isEscapeKey(evt)) {
     evt.preventDefault();
@@ -160,6 +161,11 @@ const onMessageClickToClose = (evt) => {
     evt.preventDefault();
     closeMessage(document.body.lastChild);
   }
+};
+
+const onErrorButtonClick = (evt) => {
+  evt.preventDefault();
+  closeMessage(document.body.lastChild);
 };
 
 function closeMessage (message) {
@@ -184,18 +190,22 @@ const showErrorSubmitMessage = () => {
   const errorSubmitMessage = errorSubmitMessageTemplate.cloneNode(true);
   errorSubmitMessage.classList.add('error');
   document.body.append(errorSubmitMessage);
+  const errorButtonElement = document.querySelector('.error__button');
   document.addEventListener('keydown', onMessageEscKeydown);
   document.addEventListener('click', onMessageClickToClose);
+  errorButtonElement.addEventListener('click', onErrorButtonClick);
 };
 
 const submitButtonElement = document.querySelector('.ad-form__submit');
 
 const blockSubmitButton = () => {
   submitButtonElement.disabled = true;
+  submitButtonElement.textContent = 'Публикую...';
 };
 
 const unblockSubmitButton = () => {
   submitButtonElement.disabled = false;
+  submitButtonElement.textContent = 'Опубликовать';
 };
 
 const setFormSubmit = (onSuccess) => {
