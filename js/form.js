@@ -1,3 +1,7 @@
+import { clearMap } from './map.js';
+import { isEscapeKey } from './util.js';
+import { sendData } from './load.js';
+
 const MIN_PRICE = {
   'bungalow': 0,
   'flat': 1000,
@@ -75,6 +79,7 @@ const typeFieldElement = formElement.querySelector('#type');
 const priceFieldElement = formElement.querySelector('#price');
 const timeInFieldElement = formElement.querySelector('#timein');
 const timeOutFieldElement = formElement.querySelector('#timeout');
+const resetButtonElement = formElement.querySelector('.ad-form__reset');
 
 const makeTypeMinPrice = () => {
   priceFieldElement.placeholder = MIN_PRICE[typeFieldElement.value];
@@ -133,15 +138,100 @@ priceFieldElement.addEventListener('change', validatePriceField);
 timeInFieldElement.addEventListener('change', validateTimeIn);
 timeOutFieldElement.addEventListener('change', validateTimeOut);
 
-formElement.addEventListener('submit', (evt) => {
-  if (!pristine.validate()) {
-    evt.preventDefault();
-  }
+const clearForm = () => {
+  formElement.reset();
+  clearMap();
+};
+
+resetButtonElement.addEventListener('click', (evt) => {
+  evt.preventDefault();
+  clearForm();
 });
+
+
+const onMessageEscKeydown = (evt) => {
+  if (isEscapeKey(evt)) {
+    evt.preventDefault();
+    closeMessage(document.body.lastChild);
+  }
+};
+
+const onMessageClickToClose = (evt) => {
+  if (!(evt.target.style.display === 'none')) {
+    evt.preventDefault();
+    closeMessage(document.body.lastChild);
+  }
+};
+
+const onErrorButtonClick = (evt) => {
+  evt.preventDefault();
+  closeMessage(document.body.lastChild);
+};
+
+function closeMessage (message) {
+  message.remove();
+  document.removeEventListener('keydown', onMessageEscKeydown);
+  document.removeEventListener('click', onMessageClickToClose);
+}
+
+const successSubmitMessageTemplate = document.querySelector('#success').content.querySelector('.success');
+
+const showSuccessSubmitMessage = () => {
+  const successSubmitMessage = successSubmitMessageTemplate.cloneNode(true);
+  successSubmitMessage.classList.add('success');
+  document.body.append(successSubmitMessage);
+  document.addEventListener('keydown', onMessageEscKeydown);
+  document.addEventListener('click', onMessageClickToClose);
+};
+
+const errorSubmitMessageTemplate = document.querySelector('#error').content.querySelector('.error');
+
+const showErrorSubmitMessage = () => {
+  const errorSubmitMessage = errorSubmitMessageTemplate.cloneNode(true);
+  errorSubmitMessage.classList.add('error');
+  document.body.append(errorSubmitMessage);
+  const errorButtonElement = document.querySelector('.error__button');
+  document.addEventListener('keydown', onMessageEscKeydown);
+  document.addEventListener('click', onMessageClickToClose);
+  errorButtonElement.addEventListener('click', onErrorButtonClick);
+};
+
+const submitButtonElement = document.querySelector('.ad-form__submit');
+
+const blockSubmitButton = () => {
+  submitButtonElement.disabled = true;
+  submitButtonElement.textContent = 'Публикую...';
+};
+
+const unblockSubmitButton = () => {
+  submitButtonElement.disabled = false;
+  submitButtonElement.textContent = 'Опубликовать';
+};
+
+const setFormSubmit = (onSuccess) => {
+  formElement.addEventListener('submit', (evt) => {
+    evt.preventDefault();
+    if (pristine.validate()) {
+      blockSubmitButton();
+      sendData(
+        () => {
+          onSuccess();
+          unblockSubmitButton();
+          showSuccessSubmitMessage();
+        },
+        () => {
+          showErrorSubmitMessage();
+          unblockSubmitButton();
+        },
+        new FormData(evt.target),
+      );
+    }
+  });
+};
 
 sliderElement.noUiSlider.on('update', () => {
   priceFieldElement.value = sliderElement.noUiSlider.get();
   validatePriceField();
 });
 
-export { makeFormInactive, makeFormActive };
+export { makeFormInactive, makeFormActive, setFormSubmit, clearForm, showErrorSubmitMessage, showSuccessSubmitMessage };

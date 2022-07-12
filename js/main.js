@@ -1,11 +1,22 @@
-import { makeFormInactive } from './form.js';
-import { createMap, createMainPinMarker, createSimilarPopups } from './map.js';
-import { similarAds } from './data.js';
+import { makeFormInactive, setFormSubmit, clearForm } from './form.js';
+import { activateMap, createMapMarker} from './map.js';
+import { getData } from './load.js';
+import { showErrorLoadMessage } from './util.js';
+
+const MAX_SIMILAR_ADS_AMOUNT = 10;
 
 makeFormInactive();
 
-const map = createMap();
+activateMap();
 
-createMainPinMarker(map);
+getData(
+  (data) => {
+    const ads = data.slice(0, MAX_SIMILAR_ADS_AMOUNT);
+    ads.forEach((ad) => {
+      createMapMarker(ad);
+    });
+  },
+  () => showErrorLoadMessage('Не удалось получить данные объявлений')
+);
 
-createSimilarPopups(similarAds, map);
+setFormSubmit(clearForm);
