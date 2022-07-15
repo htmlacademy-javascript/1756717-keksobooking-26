@@ -1,5 +1,7 @@
 import { mapFiltersFormElement, mapFilterElements } from './form.js';
 
+const MAX_SIMILAR_ADS_AMOUNT = 10;
+
 const defaultValue = 'any';
 
 const housingTypeElement = mapFiltersFormElement.querySelector('#housing-type');
@@ -55,19 +57,42 @@ const filterHousingFeatures = (ad) => {
   if (checkedList.length === 0) {
     return true;
   }
-  const filterFeatures = ad.offer.features.filter((feature) => checkedList.includes(feature));
-  return filterFeatures.length >= checkedList.length;
+  const offer = ad.offer;
+  if (Object.keys(offer).includes('features')) {
+    const filterFeatures = ad.offer.features.filter((feature) => checkedList.includes(feature));
+    return filterFeatures.length >= checkedList.length;
+    /*const offerFeatures = offer.features;
+    const filterFeatures = [];
+    const isFeature = offerFeatures.every((feature) => checkedList.includes(feature));
+    if (isFeature) {
+      offerFeatures.forEach((feature) => filterFeatures.push(feature));
+    }
+    return filterFeatures.length >= checkedList.length;*/
+  } else {
+    return false;
+  }
 };
 
-const showFilteredAds = (ads, amount, render) => {
-  ads
-    .slice()
-    .filter(filterHousingType)
-    .filter(filterHousingPrice)
-    .filter(filterHousingRooms)
-    .filter(filterHousingGuests)
-    .filter(filterHousingFeatures)
-    .slice(0, amount)
+const filterAds = (ads) => {
+  const filteredAds = [];
+  ads.some((ad) => {
+    if (
+      filterHousingType(ad)
+      && filterHousingPrice(ad)
+      && filterHousingRooms(ad)
+      && filterHousingGuests(ad)
+      && filterHousingFeatures(ad)
+    ) {
+      filteredAds.push(ad);
+    }
+    return filteredAds.length === MAX_SIMILAR_ADS_AMOUNT;
+  });
+  return filteredAds;
+};
+
+const showFilteredAds = (ads, render) => {
+  const adsToShow = ads.slice();
+  filterAds(adsToShow)
     .forEach((ad) => {
       render(ad);
     });

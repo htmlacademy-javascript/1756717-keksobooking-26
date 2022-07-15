@@ -91,5 +91,5 @@ const debounce = (callback, timeoutDelay = 500) => {
 };
 
 
-export { getAvatarAddress, getRandomArrayElement, getRandomNumber, getArrayRandomLength, getCoordinates, createRandomIdFromRangeGenerator, showErrorLoadMessage, isEscapeKey, debounce };
+export { getAvatarAddress, getRandomArrayElement, getRandomNumber, getArrayRandomLength, getCoordinates, createRandomIdFromRangeGenerator, showErrorLoadMessage, isEscapeKey, debounce};
 

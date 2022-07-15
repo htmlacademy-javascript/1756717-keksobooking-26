@@ -2,9 +2,8 @@ import { makeFormInactive, setFormSubmit, clearForm } from './form.js';
 import { activateMap, clearMap, createMapMarker } from './map.js';
 import { getData } from './load.js';
 import { showErrorLoadMessage, debounce } from './util.js';
-import { makeFilterActive, onFilterChange, showFilteredAds } from './filter.js';
+import { makeFilterActive, onFilterChange, showFilteredAds} from './filter.js';
 
-const MAX_SIMILAR_ADS_AMOUNT = 10;
 const RERENDER_DELAY = 200;
 
 makeFormInactive();
@@ -15,10 +14,10 @@ getData(
   (data) => {
     const ads = data;
     makeFilterActive();
-    showFilteredAds(ads, MAX_SIMILAR_ADS_AMOUNT, createMapMarker);
+    showFilteredAds(ads, createMapMarker);
     onFilterChange(debounce(() => {
       clearMap();
-      showFilteredAds(ads, MAX_SIMILAR_ADS_AMOUNT, createMapMarker);
+      showFilteredAds(ads, createMapMarker);
     }, RERENDER_DELAY));
   },
   () => showErrorLoadMessage('Не удалось получить данные объявлений')
