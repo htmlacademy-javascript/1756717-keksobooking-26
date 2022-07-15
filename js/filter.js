@@ -59,15 +59,13 @@ const filterHousingFeatures = (ad) => {
   }
   const offer = ad.offer;
   if (Object.keys(offer).includes('features')) {
-    const filterFeatures = ad.offer.features.filter((feature) => checkedList.includes(feature));
-    return filterFeatures.length >= checkedList.length;
-    /*const offerFeatures = offer.features;
+    const offerFeatures = offer.features;
     const filterFeatures = [];
-    const isFeature = offerFeatures.every((feature) => checkedList.includes(feature));
+    const isFeature = checkedList.every((feature) => offerFeatures.includes(feature));
     if (isFeature) {
       offerFeatures.forEach((feature) => filterFeatures.push(feature));
     }
-    return filterFeatures.length >= checkedList.length;*/
+    return filterFeatures.length >= checkedList.length;
   } else {
     return false;
   }
