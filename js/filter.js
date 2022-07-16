@@ -19,14 +19,14 @@ const makeFilterActive = () => {
   mapFiltersFormElement.querySelector('.map__features').removeAttribute('disabled');
 };
 
-const filterHousingType = (ad) => {
+const checkHousingType = (ad) => {
   if (housingTypeElement.value === defaultValue) {
     return true;
   }
   return ad.offer.type === housingTypeElement.value;
 };
 
-const filterHousingPrice = (ad) => {
+const checkHousingPrice = (ad) => {
   const priceFilterOptions = {
     'any': ad.offer.price,
     'middle': ad.offer.price > 10000 && ad.offer.price < 50000,
@@ -36,21 +36,21 @@ const filterHousingPrice = (ad) => {
   return priceFilterOptions[housingPriceElement.value];
 };
 
-const filterHousingRooms = (ad) => {
+const checkHousingRooms = (ad) => {
   if (housingRoomsElement.value === defaultValue) {
     return true;
   }
   return String(ad.offer.rooms) === housingRoomsElement.value;
 };
 
-const filterHousingGuests = (ad) => {
+const checkHousingGuests = (ad) => {
   if (housingGuestsElement.value === defaultValue) {
     return true;
   }
   return String(ad.offer.guests) === housingGuestsElement.value;
 };
 
-const filterHousingFeatures = (ad) => {
+const checkHousingFeatures = (ad) => {
   const checkedFeatures = housingFeaturesElement.querySelectorAll('input:checked');
   const checkedList = [];
   checkedFeatures.forEach((input) => checkedList.push(input.value));
@@ -60,37 +60,20 @@ const filterHousingFeatures = (ad) => {
   const offer = ad.offer;
   if (Object.keys(offer).includes('features')) {
     const offerFeatures = offer.features;
-    const filterFeatures = [];
-    const isFeature = checkedList.every((feature) => offerFeatures.includes(feature));
-    if (isFeature) {
-      offerFeatures.forEach((feature) => filterFeatures.push(feature));
-    }
-    return filterFeatures.length >= checkedList.length;
+    return checkedList.every((feature) => offerFeatures.includes(feature));
   } else {
     return false;
   }
 };
 
-const filterAds = (ads) => {
-  const filteredAds = [];
-  ads.some((ad) => {
-    if (
-      filterHousingType(ad)
-      && filterHousingPrice(ad)
-      && filterHousingRooms(ad)
-      && filterHousingGuests(ad)
-      && filterHousingFeatures(ad)
-    ) {
-      filteredAds.push(ad);
-    }
-    return filteredAds.length === MAX_SIMILAR_ADS_AMOUNT;
-  });
-  return filteredAds;
-};
-
 const showFilteredAds = (ads, render) => {
-  const adsToShow = ads.slice();
-  filterAds(adsToShow)
+  ads.filter((ad) => checkHousingType(ad)
+    && checkHousingPrice(ad)
+    && checkHousingRooms(ad)
+    && checkHousingGuests(ad)
+    && checkHousingFeatures(ad)
+  )
+    .slice(0, MAX_SIMILAR_ADS_AMOUNT)
     .forEach((ad) => {
       render(ad);
     });
@@ -102,4 +85,4 @@ const onFilterChange = (cb) => {
   });
 };
 
-export { makeFilterActive, filterHousingType, onFilterChange, showFilteredAds };
+export { makeFilterActive, onFilterChange, showFilteredAds };
