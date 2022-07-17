@@ -66,14 +66,27 @@ const checkHousingFeatures = (ad) => {
   }
 };
 
+const filterAds = (ads) => {
+  const filteredAds = [];
+  for (const ad of ads) {
+    if (filteredAds.length >= MAX_SIMILAR_ADS_AMOUNT) {
+      break;
+    }
+    if (
+      checkHousingType(ad)
+      && checkHousingPrice(ad)
+      && checkHousingRooms(ad)
+      && checkHousingGuests(ad)
+      && checkHousingFeatures(ad)
+    ) {
+      filteredAds.push(ad);
+    }
+  }
+  return filteredAds;
+};
+
 const showFilteredAds = (ads, render) => {
-  ads.filter((ad) => checkHousingType(ad)
-    && checkHousingPrice(ad)
-    && checkHousingRooms(ad)
-    && checkHousingGuests(ad)
-    && checkHousingFeatures(ad)
-  )
-    .slice(0, MAX_SIMILAR_ADS_AMOUNT)
+  filterAds(ads)
     .forEach((ad) => {
       render(ad);
     });
