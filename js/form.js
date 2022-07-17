@@ -1,6 +1,7 @@
 import { clearMap } from './map.js';
 import { isEscapeKey } from './util.js';
 import { sendData } from './load.js';
+import { previewPhotoElement, previewAvatarElement } from './file.js';
 
 const MIN_PRICE = {
   'bungalow': 0,
@@ -135,6 +136,8 @@ timeOutFieldElement.addEventListener('change', validateTimeOut);
 
 const clearForm = () => {
   formElement.reset();
+  previewPhotoElement.innerHTML = '';
+  previewAvatarElement.src = 'img/muffin-grey.svg';
   clearMap();
 };
 
@@ -229,4 +232,4 @@ sliderElement.noUiSlider.on('update', () => {
   validatePriceField();
 });
 
-export { makeFormInactive, makeFormActive, setFormSubmit, clearForm, showErrorSubmitMessage, showSuccessSubmitMessage, mapFiltersFormElement, mapFilterElements };
+export { makeFormInactive, makeFormActive, setFormSubmit, clearForm, showErrorSubmitMessage, showSuccessSubmitMessage, mapFiltersFormElement, mapFilterElements, formElement };
