@@ -41,11 +41,6 @@ const makeFormActive = () => {
   formElements.forEach((element) => {
     element.removeAttribute('disabled');
   });
-  mapFiltersFormElement.classList.remove('map__filters--disabled');
-  mapFilterElements.forEach((mapFilter) => {
-    mapFilter.removeAttribute('disabled');
-  });
-  mapFiltersFormElement.querySelector('.map__features').removeAttribute('disabled');
 };
 
 const sliderElement = document.querySelector('.ad-form__slider');
@@ -234,4 +229,4 @@ sliderElement.noUiSlider.on('update', () => {
   validatePriceField();
 });
 
-export { makeFormInactive, makeFormActive, setFormSubmit, clearForm, showErrorSubmitMessage, showSuccessSubmitMessage };
+export { makeFormInactive, makeFormActive, setFormSubmit, clearForm, showErrorSubmitMessage, showSuccessSubmitMessage, mapFiltersFormElement, mapFilterElements };
