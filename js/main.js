@@ -3,6 +3,7 @@ import { activateMap, clearMap, createMapMarker } from './map.js';
 import { getData } from './load.js';
 import { showErrorLoadMessage, debounce } from './util.js';
 import { makeFilterActive, onFilterChange, showFilteredAds} from './filter.js';
+import './file.js';
 
 const RERENDER_DELAY = 200;
 
