@@ -101,4 +101,5 @@ const clearMap = () => {
   markerGroup.clearLayers();
 };
 
+
 export { activateMap, createMapMarker, clearMap };

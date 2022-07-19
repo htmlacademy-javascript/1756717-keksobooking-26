@@ -1,14 +1,15 @@
 import { mapFiltersFormElement, mapFilterElements } from './form.js';
+import { createMapMarker } from './map.js';
 
 const MAX_SIMILAR_ADS_AMOUNT = 10;
 
 const defaultValue = 'any';
 
-const housingTypeElement = mapFiltersFormElement.querySelector('#housing-type');
-const housingPriceElement = mapFiltersFormElement.querySelector('#housing-price');
-const housingRoomsElement = mapFiltersFormElement.querySelector('#housing-rooms');
-const housingGuestsElement = mapFiltersFormElement.querySelector('#housing-guests');
-const housingFeaturesElement = mapFiltersFormElement.querySelector('#housing-features');
+const housingTypeElement = document.querySelector('#housing-type');
+const housingPriceElement = document.querySelector('#housing-price');
+const housingRoomsElement = document.querySelector('#housing-rooms');
+const housingGuestsElement = document.querySelector('#housing-guests');
+const housingFeaturesElement = document.querySelector('#housing-features');
 
 
 const makeFilterActive = () => {
@@ -50,6 +51,7 @@ const checkHousingGuests = (ad) => {
   return String(ad.offer.guests) === housingGuestsElement.value;
 };
 
+
 const checkHousingFeatures = (ad) => {
   const checkedFeatures = housingFeaturesElement.querySelectorAll('input:checked');
   const checkedList = [];
@@ -85,10 +87,10 @@ const filterAds = (ads) => {
   return filteredAds;
 };
 
-const showFilteredAds = (ads, render) => {
+const showFilteredAds = (ads) => {
   filterAds(ads)
     .forEach((ad) => {
-      render(ad);
+      createMapMarker(ad);
     });
 };
 
@@ -98,4 +100,4 @@ const onFilterChange = (cb) => {
   });
 };
 
-export { makeFilterActive, onFilterChange, showFilteredAds };
+export { makeFilterActive, onFilterChange, showFilteredAds, MAX_SIMILAR_ADS_AMOUNT };

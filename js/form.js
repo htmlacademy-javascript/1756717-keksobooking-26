@@ -2,6 +2,7 @@ import { clearMap } from './map.js';
 import { isEscapeKey } from './util.js';
 import { sendData } from './load.js';
 import { previewPhotoElement, previewAvatarElement } from './file.js';
+import { showFilteredAds, MAX_SIMILAR_ADS_AMOUNT } from './filter.js';
 
 const MIN_PRICE = {
   'bungalow': 0,
@@ -45,14 +46,19 @@ const makeFormActive = () => {
 };
 
 const sliderElement = document.querySelector('.ad-form__slider');
+const minSliderRange = 0;
+const maxSliderRange = 100000;
+const startSlider = 1000;
+const stepSlider = 100;
+
 
 noUiSlider.create(sliderElement, {
   range: {
-    min: 0,
-    max: 100000,
+    min: minSliderRange,
+    max: maxSliderRange,
   },
-  start: 1000,
-  step: 100,
+  start: startSlider,
+  step: stepSlider,
   connect: 'lower',
   format: {
     to: function (value) {
@@ -83,6 +89,13 @@ const makeTypeMinPrice = () => {
 };
 
 makeTypeMinPrice();
+
+const checkMinPrice = (price) => {
+  if (price > priceFieldElement.value) {
+    return price;
+  }
+  return Number(priceFieldElement.value);
+};
 
 const validateCapacity = () => CAPACITY_OPTIONS[roomFieldElement.value].includes(capacityFieldElement.value);
 
@@ -125,26 +138,36 @@ const validatePriceField = () => pristine.validate(priceFieldElement);
 
 capacityFieldElement.addEventListener('change', validateCapacityField);
 roomFieldElement.addEventListener('change', validateRoomField);
-typeFieldElement.addEventListener('change', () => {
+typeFieldElement.addEventListener('change', (evt) => {
+  const minPrice = MIN_PRICE[evt.target.value];
   makeTypeMinPrice();
   validatePriceField();
-  sliderElement.noUiSlider.set(priceFieldElement.min);
+  sliderElement.noUiSlider.updateOptions({
+    start: checkMinPrice(minPrice),
+  });
 });
 priceFieldElement.addEventListener('change', validatePriceField);
 timeInFieldElement.addEventListener('change', validateTimeIn);
 timeOutFieldElement.addEventListener('change', validateTimeOut);
 
-const clearForm = () => {
+const clearForm = (ads) => {
   formElement.reset();
+  mapFiltersFormElement.reset();
   previewPhotoElement.innerHTML = '';
   previewAvatarElement.src = 'img/muffin-grey.svg';
   clearMap();
+  const adsOnDefault = ads.slice(0, MAX_SIMILAR_ADS_AMOUNT);
+  showFilteredAds(adsOnDefault);
+  sliderElement.noUiSlider.set(MIN_PRICE[typeFieldElement.value]);
+  makeTypeMinPrice();
 };
 
-resetButtonElement.addEventListener('click', (evt) => {
-  evt.preventDefault();
-  clearForm();
-});
+const onFormReset = (ads) => {
+  resetButtonElement.addEventListener('click', (evt) => {
+    evt.preventDefault();
+    clearForm(ads);
+  });
+};
 
 
 const onMessageEscKeydown = (evt) => {
@@ -166,7 +189,7 @@ const onErrorButtonClick = (evt) => {
   closeMessage(document.body.lastChild);
 };
 
-function closeMessage (message) {
+function closeMessage(message) {
   message.remove();
   document.removeEventListener('keydown', onMessageEscKeydown);
   document.removeEventListener('click', onMessageClickToClose);
@@ -206,14 +229,14 @@ const unblockSubmitButton = () => {
   submitButtonElement.textContent = 'Опубликовать';
 };
 
-const setFormSubmit = (onSuccess) => {
+const onFormSubmit = (ads) => {
   formElement.addEventListener('submit', (evt) => {
     evt.preventDefault();
     if (pristine.validate()) {
       blockSubmitButton();
       sendData(
         () => {
-          onSuccess();
+          clearForm(ads);
           unblockSubmitButton();
           showSuccessSubmitMessage();
         },
@@ -227,9 +250,9 @@ const setFormSubmit = (onSuccess) => {
   });
 };
 
-sliderElement.noUiSlider.on('update', () => {
+sliderElement.noUiSlider.on('change', () => {
   priceFieldElement.value = sliderElement.noUiSlider.get();
   validatePriceField();
 });
 
-export { makeFormInactive, makeFormActive, setFormSubmit, clearForm, showErrorSubmitMessage, showSuccessSubmitMessage, mapFiltersFormElement, mapFilterElements, formElement };
+export { makeFormInactive, makeFormActive, onFormSubmit, clearForm, showErrorSubmitMessage, showSuccessSubmitMessage, mapFiltersFormElement, mapFilterElements, formElement, onFormReset };
