@@ -1,5 +1,5 @@
-import { makeFormInactive, setFormSubmit, clearForm } from './form.js';
-import { activateMap, clearMap, createMapMarker } from './map.js';
+import { makeFormInactive, onFormSubmit, onFormReset } from './form.js';
+import { activateMap, clearMap } from './map.js';
 import { getData } from './load.js';
 import { showErrorLoadMessage, debounce } from './util.js';
 import { makeFilterActive, onFilterChange, showFilteredAds} from './filter.js';
@@ -15,13 +15,13 @@ getData(
   (data) => {
     const ads = data;
     makeFilterActive();
-    showFilteredAds(ads, createMapMarker);
+    showFilteredAds(ads);
     onFilterChange(debounce(() => {
       clearMap();
-      showFilteredAds(ads, createMapMarker);
+      showFilteredAds(ads);
     }, RERENDER_DELAY));
+    onFormSubmit(ads);
+    onFormReset(ads);
   },
   () => showErrorLoadMessage('Не удалось получить данные объявлений')
 );
-
-setFormSubmit(clearForm);
