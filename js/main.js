@@ -1,5 +1,5 @@
 import { makeFormInactive, onFormSubmit, onFormReset } from './form.js';
-import { activateMap, clearMap } from './map.js';
+import { activateMap, clearMapOnFilter } from './map.js';
 import { getData } from './load.js';
 import { showErrorLoadMessage, debounce } from './util.js';
 import { makeFilterActive, onFilterChange, showFilteredAds} from './filter.js';
@@ -17,7 +17,7 @@ getData(
     makeFilterActive();
     showFilteredAds(ads);
     onFilterChange(debounce(() => {
-      clearMap();
+      clearMapOnFilter();
       showFilteredAds(ads);
     }, RERENDER_DELAY));
     onFormSubmit(ads);
