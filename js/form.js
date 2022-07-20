@@ -90,13 +90,6 @@ const makeTypeMinPrice = () => {
 
 makeTypeMinPrice();
 
-const checkMinPrice = (price) => {
-  if (price > priceFieldElement.value) {
-    return price;
-  }
-  return Number(priceFieldElement.value);
-};
-
 const validateCapacity = () => CAPACITY_OPTIONS[roomFieldElement.value].includes(capacityFieldElement.value);
 
 const validatePrice = () => +priceFieldElement.min <= +priceFieldElement.value;
@@ -138,13 +131,9 @@ const validatePriceField = () => pristine.validate(priceFieldElement);
 
 capacityFieldElement.addEventListener('change', validateCapacityField);
 roomFieldElement.addEventListener('change', validateRoomField);
-typeFieldElement.addEventListener('change', (evt) => {
-  const minPrice = MIN_PRICE[evt.target.value];
+typeFieldElement.addEventListener('change', () => {
   makeTypeMinPrice();
   validatePriceField();
-  sliderElement.noUiSlider.updateOptions({
-    start: checkMinPrice(minPrice),
-  });
 });
 priceFieldElement.addEventListener('change', validatePriceField);
 timeInFieldElement.addEventListener('change', validateTimeIn);
