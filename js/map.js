@@ -104,5 +104,8 @@ const clearMap = () => {
   markerGroup.clearLayers();
 };
 
+const clearMapOnFilter = () => {
+  markerGroup.clearLayers();
+};
 
-export { activateMap, createMapMarker, clearMap };
+export { activateMap, createMapMarker, clearMap, clearMapOnFilter };
