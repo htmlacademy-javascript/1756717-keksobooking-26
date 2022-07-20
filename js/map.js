@@ -82,7 +82,6 @@ const createMapMarker = (similarAd) => {
       lng: similarAdLng,
     },
     {
-      draggable: true,
       icon: similarIcon,
     },
   );
@@ -97,6 +96,10 @@ const clearMap = () => {
     lat: STATIC_MAIN_LAT,
     lng: STATIC_MAIN_LNG,
   });
+  mapMain.setView({
+    lat: STATIC_MAIN_LAT,
+    lng: STATIC_MAIN_LNG,
+  }, 12);
   addressElement.value = `${addressValueOnDefault.lat}, ${addressValueOnDefault.lng}`;
   markerGroup.clearLayers();
 };
