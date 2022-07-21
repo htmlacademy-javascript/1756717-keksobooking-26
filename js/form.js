@@ -94,13 +94,13 @@ const validateCapacity = () => CAPACITY_OPTIONS[roomFieldElement.value].includes
 
 const validatePrice = () => +priceFieldElement.min <= +priceFieldElement.value;
 
-const validateTimeOut = () => {
+const onTimeOutValidate = () => {
   if (!(timeInFieldElement.value === timeOutFieldElement.value)) {
     timeInFieldElement.value = timeOutFieldElement.value;
   }
 };
 
-const validateTimeIn = () => {
+const onTimeInValidate = () => {
   if (!(timeInFieldElement.value === timeOutFieldElement.value)) {
     timeOutFieldElement.value = timeInFieldElement.value;
   }
@@ -125,19 +125,19 @@ const getPriceErrorMessage = () => `Минимальная цена ${MIN_PRICE[
 pristine.addValidator(capacityFieldElement, validateCapacity, getCapacityErrorMessage);
 pristine.addValidator(priceFieldElement, validatePrice, getPriceErrorMessage);
 
-const validateCapacityField = () => pristine.validate(capacityFieldElement);
-const validateRoomField = () => pristine.validate(capacityFieldElement);
-const validatePriceField = () => pristine.validate(priceFieldElement);
+const onCapacityFieldValidate = () => pristine.validate(capacityFieldElement);
+const onRoomFieldValidate = () => pristine.validate(capacityFieldElement);
+const onPriceFieldValidate = () => pristine.validate(priceFieldElement);
 
-capacityFieldElement.addEventListener('change', validateCapacityField);
-roomFieldElement.addEventListener('change', validateRoomField);
+capacityFieldElement.addEventListener('change', onCapacityFieldValidate);
+roomFieldElement.addEventListener('change', onRoomFieldValidate);
 typeFieldElement.addEventListener('change', () => {
   makeTypeMinPrice();
-  validatePriceField();
+  onPriceFieldValidate();
 });
-priceFieldElement.addEventListener('change', validatePriceField);
-timeInFieldElement.addEventListener('change', validateTimeIn);
-timeOutFieldElement.addEventListener('change', validateTimeOut);
+priceFieldElement.addEventListener('change', onPriceFieldValidate);
+timeInFieldElement.addEventListener('change', onTimeInValidate);
+timeOutFieldElement.addEventListener('change', onTimeOutValidate);
 
 const clearForm = (ads) => {
   formElement.reset();
@@ -241,7 +241,7 @@ const onFormSubmit = (ads) => {
 
 sliderElement.noUiSlider.on('change', () => {
   priceFieldElement.value = sliderElement.noUiSlider.get();
-  validatePriceField();
+  onPriceFieldValidate();
 });
 
 export { makeFormInactive, makeFormActive, onFormSubmit, clearForm, showErrorSubmitMessage, showSuccessSubmitMessage, mapFiltersFormElement, mapFilterElements, formElement, onFormReset };

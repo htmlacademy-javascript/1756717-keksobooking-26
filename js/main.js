@@ -5,7 +5,7 @@ import { showErrorLoadMessage, debounce } from './util.js';
 import { makeFilterActive, onFilterChange, showFilteredAds} from './filter.js';
 import './file.js';
 
-const RERENDER_DELAY = 200;
+const RERENDER_DELAY = 500;
 
 makeFormInactive();
 

@@ -63,8 +63,6 @@ const checkHousingFeatures = (ad) => {
   if (Object.keys(offer).includes('features')) {
     const offerFeatures = offer.features;
     return checkedList.every((feature) => offerFeatures.includes(feature));
-  } else {
-    return false;
   }
 };
 
